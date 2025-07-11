@@ -1,7 +1,9 @@
 package main
 
 import (
+	"crypto/tls"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net"
 )
@@ -39,7 +41,17 @@ type OutgoingMessage struct {
 }
 
 func GetServer(addr string) (*ServerNetworking, error) {
-	listener, err := net.Listen("tcp", addr)
+	cert, err := tls.LoadX509KeyPair("crypto/server.crt", "crypto/server.key")
+	if err != nil {
+		return nil, fmt.Errorf("failed to load certificate: %v", err)
+	}
+
+	config := &tls.Config{
+		Certificates: []tls.Certificate{cert},
+		MinVersion:   tls.VersionTLS12,
+	}
+
+	listener, err := tls.Listen("tcp", addr, config)
 	if err != nil {
 		return nil, err
 	}
