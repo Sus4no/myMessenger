@@ -4,6 +4,7 @@
 2. Замените значения на актуальные в `server.conf`
 3. Выполните:
    ```bash
+   openssl genpkey -algorithm RSA -out server.key
    openssl req -x509 -new -key server.key -out server.crt -days 365 -config server.conf
 4. Собрать отдельно сервер и клиента
    ```bash
